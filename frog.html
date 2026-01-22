@@ -48,8 +48,6 @@
         Render.run(render);
         Runner.run(runner, engine);
 
-        // 【修正前】
-       const ground = Bodies.rectangle(WIDTH/2, HEIGHT -50, WIDTH, 50, { isStatic: true, render: { fillStyle: '#81c784' } });
        // 【修正後】地面を少し下げ、厚みを薄くしてピタッと着地させます
       const ground = Bodies.rectangle(WIDTH/2, HEIGHT - 5, WIDTH, 10, { isStatic: true, render: { fillStyle: '#81c784' } });
         const leftWall = Bodies.rectangle(-25, HEIGHT/2, 50, HEIGHT, { isStatic: true });
@@ -137,3 +135,4 @@
 </body>
 
 </html>
+
