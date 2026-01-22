@@ -32,11 +32,11 @@
         const LINE_Y = 150;
 
         // カエル9種類に合わせてサイズとスコアを調整
-       // 半径（radius）を少し小さく、当たり判定を内側に絞ります
+// 1. カエルの物理的な大きさを少し大きくして、地面を突き抜けないようにします
 const FROG_DATA = [
-    { radius: 12, score: 2 }, { radius: 18, score: 4 }, { radius: 26, score: 8 },
-    { radius: 34, score: 16 }, { radius: 42, score: 32 }, { radius: 50, score: 64 },
-    { radius: 58, score: 128 }, { radius: 68, score: 256 }, { radius: 80, score: 512 }
+    { radius: 15, score: 2 }, { radius: 22, score: 4 }, { radius: 32, score: 8 },
+    { radius: 42, score: 16 }, { radius: 52, score: 32 }, { radius: 62, score: 64 },
+    { radius: 72, score: 128 }, { radius: 82, score: 256 }, { radius: 95, score: 512 }
 ];
 
         const engine = Engine.create();
@@ -65,23 +65,33 @@ const FROG_DATA = [
         let isClickable = true;
         let gameOverTriggered = false;
 
-        function createFrog(x, y, level) {
-            const data = FROG_DATA[level];
-            const frog = Bodies.circle(x, y, data.radius, {
-                restitution: 0.4,
-                label: "frog_" + level,
-                render: {
-                    sprite: {
-                        // 保存したkaeru1.png〜kaeru9.pngを読み込みます
-                        texture: `${IMG_BASE_URL}kaeru${level + 1}.png`,
-                        xScale: (data.radius * 2) / 100,
-                        yScale: (data.radius * 2) / 100
-                    }
-                }
-            });
-            frog.level = level;
-            return frog;
+       // 1. カエルの物理的な大きさを少し大きくして、地面を突き抜けないようにします
+const FROG_DATA = [
+    { radius: 15, score: 2 }, { radius: 22, score: 4 }, { radius: 32, score: 8 },
+    { radius: 42, score: 16 }, { radius: 52, score: 32 }, { radius: 62, score: 64 },
+    { radius: 72, score: 128 }, { radius: 82, score: 256 }, { radius: 95, score: 512 }
+];
+
+// 2. 画像の描画倍率（xScale/yScale）を、物理的な円のサイズにピッタリ合わせます
+function createFrog(x, y, level) {
+    const data = FROG_DATA[level];
+    const frog = Bodies.circle(x, y, data.radius, {
+        restitution: 0.4,
+        friction: 0.1, // 少し摩擦を加えて転がりすぎを防ぎます
+        label: "frog_" + level,
+        render: {
+            sprite: {
+                texture: `${IMG_BASE_URL}kaeru${level + 1}.png`,
+                // ここが重要！画像の元サイズが小さくても、円の直径(radius*2)に合わせます
+                // 100という数字を、実際の画像のピクセル数（例えば50など）に調整するとより正確です
+                xScale: (data.radius * 2) / 100, 
+                yScale: (data.radius * 2) / 100
+            }
         }
+    });
+    frog.level = level;
+    return frog;
+}
 
        window.addEventListener("mousedown", (e) => { dropFrog(e.clientX); });
        window.addEventListener("touchstart", (e) => { dropFrog(e.touches[0].clientX); });
@@ -141,6 +151,7 @@ const FROG_DATA = [
 </body>
 
 </html>
+
 
 
 
